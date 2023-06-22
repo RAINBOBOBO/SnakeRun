@@ -36,7 +36,6 @@ public class SnakeHeadController : MonoBehaviour
     void Start()
     {
         gameState = gameStateObject.GetComponent<GameState>();
-        headGameObject.GetComponent<SpriteRenderer>().enabled = false;
     }
 
     void Update()

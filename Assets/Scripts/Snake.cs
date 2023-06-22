@@ -33,7 +33,7 @@ public class Snake : MonoBehaviour
 
         if (healthPoints == 0)
         {
-            gameState.ShowScore();
+            gameState.SetStateScore();
         }
 
         if (CheckIfSelfEaten())
