@@ -7,7 +7,7 @@ public class GameState : MonoBehaviour
 {
     public enum State
     {
-        Menu, Endless, EndlessLoading, Tutorial, Settings, DevSettings, Score
+        Menu, Endless, EndlessLoading, Tutorial, Settings, DevSettings, Score, Death
     }
     public State currentState;
     private State previousState;
@@ -22,6 +22,7 @@ public class GameState : MonoBehaviour
     public GameObject scoreScreen;
     public GameObject settingsScreen;
     public GameObject devSettingsScreen;
+    public GameObject deathScreen;
 
     void Start()
     {
@@ -48,6 +49,9 @@ public class GameState : MonoBehaviour
         if (previousState != currentState && currentState == State.DevSettings) ShowDevSettings();
         if (previousState == State.DevSettings && currentState != State.DevSettings) HideDevSettings();
 
+        if (previousState != currentState && currentState == State.Death) ShowDeath();
+        if (previousState == State.Death && currentState != State.Death) HideDeath();
+
         if (previousState != currentState) previousState = currentState;
     }
 
@@ -57,12 +61,15 @@ public class GameState : MonoBehaviour
     public void SetStateSettings() { currentState = State.Settings; }
     public void SetStateDevSettings() { currentState = State.DevSettings; }
 
+    public void SetStateDeath() { currentState = State.Death; }
+
     void ResetSceneAtStart()
     {
         currentState = State.Menu;
         HideScore();
         HideSettings();
         HideDevSettings();
+        HideDeath();
         ShowMenu();
     }
     
@@ -75,6 +82,7 @@ public class GameState : MonoBehaviour
     {
         menuScreen.SetActive(false);
     }
+
     void StartEndless()
     {
         snakeHeadController.ResetHead();
@@ -118,5 +126,15 @@ public class GameState : MonoBehaviour
     void HideDevSettings()
     {
         devSettingsScreen.SetActive(false);
+    }
+
+    void ShowDeath()
+    {
+        deathScreen.SetActive(true);
+    }
+
+    void HideDeath()
+    {
+        deathScreen.SetActive(false);
     }
 }

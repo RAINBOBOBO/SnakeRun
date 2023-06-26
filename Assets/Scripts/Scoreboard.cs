@@ -94,14 +94,14 @@ public class Scoreboard : MonoBehaviour
         transforms.Add(entryTransform);
     }
 
-    private void InsertHighScoreIntoListSorted(HighScoreEntry entry, List<HighScoreEntry> scores)
+    private bool InsertHighScoreIntoListSorted(HighScoreEntry entry, List<HighScoreEntry> scores)
     {
         entry.isNewEntry = true;
         if (scores.Count == 0)
         {
             scores.Add(entry);
             SaveHighScores(scores);
-            return;
+            return true;
         }
 
         for (int i = 0; i < scores.Count; i++)
@@ -111,7 +111,7 @@ public class Scoreboard : MonoBehaviour
                 scores.Insert(i, entry);
                 if (scores.Count > 10) scores.RemoveAt(scores.Count - 1);
                 SaveHighScores(scores);
-                return;
+                return true;
             }
 
             if (scores[i].score == entry.score)
@@ -119,14 +119,26 @@ public class Scoreboard : MonoBehaviour
                 scores.Insert(i, entry);
                 if (scores.Count > 10) scores.RemoveAt(scores.Count - 1);
                 SaveHighScores(scores);
-                return;
+                return true;
             }
         }
 
-        scores.Insert(scores.Count, entry);
-        if (scores.Count > 10) scores.RemoveAt(scores.Count - 1);
-        SaveHighScores(scores);
-        return;
+        if (scores.Count < 10) 
+        {
+            scores.Insert(scores.Count, entry);
+            SaveHighScores(scores);
+            return true;
+        }
+
+        return false;
+    }
+
+    public bool SubmitScoreForHighScoreEntry(int score)
+    {
+        string date = DateTime.Now.ToString("M/d/yy");
+        HighScoreEntry entry = new HighScoreEntry { date = date, score = score };
+        bool isNewHighScore = InsertHighScoreIntoListSorted(entry, highScores);
+        return isNewHighScore;
     }
 
     private void SaveHighScores(List<HighScoreEntry> highScores)

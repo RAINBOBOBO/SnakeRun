@@ -11,6 +11,7 @@ public class Snake : MonoBehaviour
     private SnakeSegment headSegment = new SnakeSegment();
     private SnakeSegment tailSegment;
     private GameState gameState;
+    private DeathScreen deathScreen;
     private float currentTimeStep = 0f;
 
     public int startHP = 5;
@@ -21,10 +22,12 @@ public class Snake : MonoBehaviour
 
     public GameObject headGameObject;
     public GameObject gameStateObject;
+    public GameObject deathScreenObject;
 
     void Start()
     {
         gameState = gameStateObject.GetComponent<GameState>();
+        deathScreen = gameStateObject.GetComponent<DeathScreen>();
     }
 
     void Update()
@@ -33,7 +36,8 @@ public class Snake : MonoBehaviour
 
         if (healthPoints == 0)
         {
-            gameState.SetStateScore();
+            deathScreen.SubmitFinalScore(score);
+            gameState.SetStateDeath();
         }
 
         if (CheckIfSelfEaten())
