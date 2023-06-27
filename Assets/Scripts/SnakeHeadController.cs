@@ -10,7 +10,7 @@ public class SnakeHeadController : MonoBehaviour
 
     public Rigidbody2D headRigidBody;
     public GameObject headGameObject;
-    public float nextMove = 0.5f;
+    public float nextMove = 2f;
     public float velocity = 1.0f;
     public float moveInterval = 0.25f;
     public GameObject gameStateObject;
@@ -23,9 +23,9 @@ public class SnakeHeadController : MonoBehaviour
     public void ResetHead()
     {
         headGameObject.GetComponent<SpriteRenderer>().enabled = true;
-        nextMove = Time.time;
         headRigidBody.position = Vector2.zero;
         headDirection = Direction.Up;
+        nextMove = Time.time + 0.25f;
     }
 
     public void DeactivateHead()

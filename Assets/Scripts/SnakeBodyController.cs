@@ -13,7 +13,7 @@ public class SnakeBodyController : MonoBehaviour
     void Start()
     {
         upcomingPosition = nextRigidBody.position;
-        thisRigidBody.position = nextRigidBody.position + Vector2.down;
+        //thisRigidBody.position = nextRigidBody.position + Vector2.down;
     }
 
     // Update is called once per frame

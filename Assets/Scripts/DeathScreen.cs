@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class DeathScreen : MonoBehaviour
@@ -10,23 +11,25 @@ public class DeathScreen : MonoBehaviour
     
     public GameObject scoreBoardObject;
     public GameObject newHighScoreObject;
-    public GameObject newLowScoreObject;
+    public GameObject scoreObject;
     
     void Start()
     {
         scoreboard = scoreBoardObject.GetComponent<Scoreboard>();
     }
 
-    private void OnEnable()
+    public void UpdateDeathScreen()
     {
         newHighScoreObject.SetActive(false);
         if (isNewHighScore) newHighScoreObject.SetActive(true);
-
+        scoreObject.GetComponent<TextMeshProUGUI>().text = finalScore.ToString();
     }
 
-    private void OnDisable()
+    public void ResetDeathScreen()
     {
         newHighScoreObject.SetActive(false);
+        isNewHighScore = false;
+        finalScore = 0;
     }
 
     public void SubmitFinalScore(int score)

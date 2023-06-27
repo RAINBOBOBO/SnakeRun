@@ -11,6 +11,7 @@ public class Scoreboard : MonoBehaviour
     private Transform entryTemplate;
     private List<HighScoreEntry> highScores = new List<HighScoreEntry>();
     private List<Transform> highScoreTransforms = new List<Transform>();
+    private static string SCORE_CONTAINER_PATH = "ScoreCanvas/HighScoreTable/ScoreContainer";
 
     public float templateHeight = 20f;
 
@@ -27,15 +28,17 @@ public class Scoreboard : MonoBehaviour
         public List<HighScoreEntry> highScores;
     }
 
-    private void Awake()
+    void Start()
     {
-        scoreContainer = transform.Find("ScoreContainer");
-        entryTemplate = transform.Find("ScoreContainer/EntryTemplate");
+        highScores = LoadHighScores().highScores;
+
+        scoreContainer = transform.Find(SCORE_CONTAINER_PATH);
+        entryTemplate = transform.Find($"{SCORE_CONTAINER_PATH}/EntryTemplate");
 
         entryTemplate.gameObject.SetActive(false);
     }
 
-    private void OnEnable()
+    public void ShowEntries()
     {
         HighScoreList highScoresToLoad = LoadHighScores();
         if (highScoresToLoad != null)
@@ -49,12 +52,12 @@ public class Scoreboard : MonoBehaviour
         }
     }
 
-    private void OnDisable()
+    public void HideEntries()
     {
         for (int i = 0; i < highScores.Count; i++)
         {
-            Transform currentTransform = transform.Find($"ScoreContainer/Entry {i + 1}");
-            Destroy(currentTransform.gameObject);
+            Transform currentTransform = transform.Find($"{SCORE_CONTAINER_PATH}/Entry {i + 1}");
+            if (currentTransform) Destroy(currentTransform.gameObject);
 
             highScores[i].isNewEntry = false;
         }
@@ -96,6 +99,9 @@ public class Scoreboard : MonoBehaviour
 
     private bool InsertHighScoreIntoListSorted(HighScoreEntry entry, List<HighScoreEntry> scores)
     {
+        // I know. This isn't pretty but high score list will only ever be 10 entries long
+        foreach (HighScoreEntry score in scores) { score.isNewEntry = false; }
+        
         entry.isNewEntry = true;
         if (scores.Count == 0)
         {

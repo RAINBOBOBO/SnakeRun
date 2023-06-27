@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
@@ -13,6 +14,7 @@ public class Snake : MonoBehaviour
     private GameState gameState;
     private DeathScreen deathScreen;
     private float currentTimeStep = 0f;
+    private static string GAME_UI_PATH = $"GameUICanvas/GameUITable";
 
     public int startHP = 5;
     public int bodySegmentCount = 4;
@@ -23,11 +25,12 @@ public class Snake : MonoBehaviour
     public GameObject headGameObject;
     public GameObject gameStateObject;
     public GameObject deathScreenObject;
+    public GameObject gameScreenObject;
 
     void Start()
     {
         gameState = gameStateObject.GetComponent<GameState>();
-        deathScreen = gameStateObject.GetComponent<DeathScreen>();
+        deathScreen = deathScreenObject.GetComponent<DeathScreen>();
     }
 
     void Update()
@@ -73,16 +76,17 @@ public class Snake : MonoBehaviour
             currentBodySegment.nextSegment = nextSegment;
             nextSegment.previousSegment = currentBodySegment;
 
-            GameObject currentBodySegmentGameObject = new GameObject();
-            currentBodySegmentGameObject.name = $"Body{currentBodySegmentIndex}";
+            GameObject currentBodySegmentGameObject = new GameObject($"Body{currentBodySegmentIndex}");
+            currentBodySegmentGameObject.transform.SetParent(gameScreenObject.transform);
+
             currentBodySegmentGameObject.AddComponent<SpriteRenderer>();
             currentBodySegmentGameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/SnakeBod");
-            currentBodySegmentGameObject.transform.localScale = new Vector3(2, 2, 1);
+            currentBodySegmentGameObject.transform.localScale = new Vector3(0.05f, 0.05f, 1);
             currentBodySegmentGameObject.AddComponent<BoxCollider2D>();
 
             currentBodySegmentGameObject.AddComponent<Rigidbody2D>();
             Rigidbody2D currentBodySegmentRigidBody = currentBodySegmentGameObject.GetComponent<Rigidbody2D>();
-            currentBodySegmentRigidBody.position = nextSegment.snakeSegmentGameObject.GetComponent<Rigidbody2D>().position + Vector2.down;
+            currentBodySegmentRigidBody.position = nextSegment.snakeSegmentGameObject.GetComponent<Rigidbody2D>().position + new Vector2(0, -0.025f);
             currentBodySegmentRigidBody.bodyType = RigidbodyType2D.Kinematic;
 
             currentBodySegmentGameObject.AddComponent<SnakeBodyController>();
@@ -146,5 +150,7 @@ public class Snake : MonoBehaviour
     void IncreaseScore()
     {
         score += scoreIncrement;
+        Transform scoreTransform = gameScreenObject.transform.Find($"{GAME_UI_PATH}/CurrentScoreValueText");
+        scoreTransform.GetComponent<TextMeshProUGUI>().text = score.ToString("#,#");
     }
 }

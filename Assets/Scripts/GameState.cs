@@ -18,14 +18,24 @@ public class GameState : MonoBehaviour
     public GameObject snakeObject;
     private Snake snake;
 
-    public GameObject menuScreen;
-    public GameObject scoreScreen;
-    public GameObject settingsScreen;
-    public GameObject devSettingsScreen;
-    public GameObject deathScreen;
+    public GameObject scoreboardObject;
+    private Scoreboard scoreboard;
+
+    public GameObject deathScreenObject;
+    private DeathScreen deathScreen;
+
+    public GameObject menuCanvas;
+    public GameObject scoreCanvas;
+    public GameObject deathCanvas;
+    public GameObject settingsCanvas;
+    public GameObject devSettingsCanvas;
+    public GameObject gameUICanvas;
 
     void Start()
     {
+        scoreboard = scoreboardObject.GetComponent<Scoreboard>();
+        deathScreen = deathScreenObject.GetComponent<DeathScreen>();
+
         previousState = currentState;
         snakeHeadController = snakeHeadControllerObject.GetComponent<SnakeHeadController>();
         snake = snakeObject.GetComponent<Snake>();
@@ -75,12 +85,12 @@ public class GameState : MonoBehaviour
     
     void ShowMenu()
     {
-        menuScreen.SetActive(true);
+        menuCanvas.SetActive(true);
     }
 
     void HideMenu()
     {
-        menuScreen.SetActive(false);
+        menuCanvas.SetActive(false);
     }
 
     void StartEndless()
@@ -88,11 +98,13 @@ public class GameState : MonoBehaviour
         snakeHeadController.ResetHead();
         snake.CreateSnake();
         snake.score = 0;
+        gameUICanvas.SetActive(true);
         currentState = State.Endless;
     }
 
     void EndEndless()
     {
+        gameUICanvas.SetActive(false);
         snake.DeleteSnake();
         snakeHeadController.DeactivateHead();
     }
@@ -100,41 +112,46 @@ public class GameState : MonoBehaviour
     public void ShowScore()
     {
         //Debug.Log($"Final Score: {snake.score}");
-        scoreScreen.SetActive(true);
+        scoreboard.ShowEntries();
+        scoreCanvas.SetActive(true);
+
     }
 
     void HideScore()
     {
-        scoreScreen.SetActive(false);
+        scoreboard.HideEntries();
+        scoreCanvas.SetActive(false);
     }
 
     void ShowSettings()
     {
-        settingsScreen.SetActive(true);
+        settingsCanvas.SetActive(true);
     }
 
     void HideSettings()
     {
-        settingsScreen.SetActive(false);
+        settingsCanvas.SetActive(false);
     }
 
     void ShowDevSettings()
     {
-        devSettingsScreen.SetActive(true);
+        devSettingsCanvas.SetActive(true);
     }
 
     void HideDevSettings()
     {
-        devSettingsScreen.SetActive(false);
+        devSettingsCanvas.SetActive(false);
     }
 
     void ShowDeath()
     {
-        deathScreen.SetActive(true);
+        deathCanvas.SetActive(true);
+        deathScreen.UpdateDeathScreen();
     }
 
     void HideDeath()
     {
-        deathScreen.SetActive(false);
+        deathScreen.ResetDeathScreen();
+        deathCanvas.SetActive(false);
     }
 }
