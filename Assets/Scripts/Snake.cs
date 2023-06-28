@@ -8,52 +8,35 @@ using UnityEngine.U2D;
 
 public class Snake : MonoBehaviour
 {
-    private int healthPoints;
     private SnakeSegment headSegment = new SnakeSegment();
     private SnakeSegment tailSegment;
-    private GameState gameState;
-    private DeathScreen deathScreen;
-    private float currentTimeStep = 0f;
-    private static string GAME_UI_PATH = $"GameUICanvas/GameUITable";
-
-    public int startHP = 5;
+    
     public int bodySegmentCount = 4;
+    public int startHP = 5;
+    public int healthPoints;
     public int score = 0;
     public int scoreIncrement = 1;
     public float scoreTimeStep = 1f;
 
     public GameObject headGameObject;
-    public GameObject gameStateObject;
-    public GameObject deathScreenObject;
     public GameObject gameScreenObject;
 
     void Start()
     {
-        gameState = gameStateObject.GetComponent<GameState>();
-        deathScreen = deathScreenObject.GetComponent<DeathScreen>();
+        
     }
 
     void Update()
     {
-        if (gameState.currentState != GameState.State.Endless) return;
-
-        if (healthPoints == 0)
-        {
-            deathScreen.SubmitFinalScore(score);
-            gameState.SetStateDeath();
-        }
-
         if (CheckIfSelfEaten())
         {
             healthPoints = 0;
         }
+    }
 
-        if (Time.time >= currentTimeStep)
-        {
-            currentTimeStep += scoreTimeStep;
-            IncreaseScore();
-            Debug.Log($"Current Score: {score}");
-        }
+    public string ScoreAsString
+    {
+        get => score.ToString("#,#");
     }
 
     class SnakeSegment
@@ -65,7 +48,6 @@ public class Snake : MonoBehaviour
 
     public void CreateSnake()
     {
-        currentTimeStep = Time.time;
         healthPoints = startHP;
 
         headSegment.snakeSegmentGameObject = headGameObject;
@@ -145,12 +127,5 @@ public class Snake : MonoBehaviour
         }
 
         return false;
-    }
-
-    void IncreaseScore()
-    {
-        score += scoreIncrement;
-        Transform scoreTransform = gameScreenObject.transform.Find($"{GAME_UI_PATH}/CurrentScoreValueText");
-        scoreTransform.GetComponent<TextMeshProUGUI>().text = score.ToString("#,#");
     }
 }

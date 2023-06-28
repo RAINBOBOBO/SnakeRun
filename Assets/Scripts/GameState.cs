@@ -24,6 +24,9 @@ public class GameState : MonoBehaviour
     public GameObject deathScreenObject;
     private DeathScreen deathScreen;
 
+    public GameObject gameLoopObject;
+    private GameLoop gameLoop;
+
     public GameObject menuCanvas;
     public GameObject scoreCanvas;
     public GameObject deathCanvas;
@@ -35,6 +38,7 @@ public class GameState : MonoBehaviour
     {
         scoreboard = scoreboardObject.GetComponent<Scoreboard>();
         deathScreen = deathScreenObject.GetComponent<DeathScreen>();
+        gameLoop = gameLoopObject.GetComponent<GameLoop>();
 
         previousState = currentState;
         snakeHeadController = snakeHeadControllerObject.GetComponent<SnakeHeadController>();
@@ -80,6 +84,7 @@ public class GameState : MonoBehaviour
         HideSettings();
         HideDevSettings();
         HideDeath();
+        HideGameUI();
         ShowMenu();
     }
     
@@ -98,13 +103,14 @@ public class GameState : MonoBehaviour
         snakeHeadController.ResetHead();
         snake.CreateSnake();
         snake.score = 0;
-        gameUICanvas.SetActive(true);
+        ShowGameUI();
+        gameLoop.StartTimer();
         currentState = State.Endless;
     }
 
     void EndEndless()
     {
-        gameUICanvas.SetActive(false);
+        HideGameUI();
         snake.DeleteSnake();
         snakeHeadController.DeactivateHead();
     }
@@ -153,5 +159,15 @@ public class GameState : MonoBehaviour
     {
         deathScreen.ResetDeathScreen();
         deathCanvas.SetActive(false);
+    }
+
+    void ShowGameUI()
+    {
+        gameUICanvas.SetActive(true);
+    }
+
+    void HideGameUI()
+    {
+        gameUICanvas.SetActive(false);
     }
 }
