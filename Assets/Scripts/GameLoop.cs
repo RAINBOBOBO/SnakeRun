@@ -10,7 +10,7 @@ public class GameLoop : MonoBehaviour
     private float nextTimeStep;
     private float timeIncrement = 0.25f;
     private float scoreIncreaseFrequency = 1;
-    private static string GAME_UI_PATH = $"GameUICanvas/GameUITable";
+    private static string GAME_UI_PATH = $"GameUICanvas";
     private Transform scoreText;
     private Transform healthText;
 
@@ -31,8 +31,8 @@ public class GameLoop : MonoBehaviour
         gameState = gameStateObject.GetComponent<GameState>();
         deathScreen = deathScreenObject.GetComponent<DeathScreen>();
 
-        scoreText = gameScreenObject.transform.Find($"{GAME_UI_PATH}/CurrentScoreValueText");
-        healthText = gameScreenObject.transform.Find($"{GAME_UI_PATH}/CurrentHPValueText");
+        scoreText = gameScreenObject.transform.Find($"{GAME_UI_PATH}/ScoreValueText");
+        healthText = gameScreenObject.transform.Find($"{GAME_UI_PATH}/HealthValueText");
         healthText.GetComponent<TextMeshProUGUI>().text = snake.startHP.ToString();
     }
 
@@ -42,8 +42,7 @@ public class GameLoop : MonoBehaviour
 
         if (snake.healthPoints == 0)
         {
-            deathScreen.SubmitFinalScore(snake.score);
-            gameState.SetStateDeath();
+            GameOver();
         }
 
         if (Time.time >= nextTimeStep)
@@ -73,5 +72,27 @@ public class GameLoop : MonoBehaviour
     public void StartTimer()
     {
         nextTimeStep = Time.time;
+    }
+
+    public void GameOver()
+    {
+        deathScreen.SubmitFinalScore(snake.score);
+        gameState.SetStateDeath();
+    }
+
+    public List<BoxCollider2D> GetBorderBounds()
+    {
+        List<BoxCollider2D> bounds = new List<BoxCollider2D>();
+        BoxCollider2D borderNorth = transform.Find($"{GAME_UI_PATH}/BorderNorth").GetComponent<BoxCollider2D>();
+        BoxCollider2D borderSouth = transform.Find($"{GAME_UI_PATH}/BorderSouth").GetComponent<BoxCollider2D>();
+        BoxCollider2D borderEast = transform.Find($"{GAME_UI_PATH}/BorderEast").GetComponent<BoxCollider2D>();
+        BoxCollider2D borderWest = transform.Find($"{GAME_UI_PATH}/BorderWest").GetComponent<BoxCollider2D>();
+
+        bounds.Add(borderNorth);
+        bounds.Add(borderSouth);
+        bounds.Add(borderEast);
+        bounds.Add(borderWest);
+
+        return bounds;
     }
 }
